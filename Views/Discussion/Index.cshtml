@@ -1,0 +1,76 @@
+﻿@model GamingForum.Models.DiscussionViewModels.DiscussionViewModel
+
+@{
+	Layout="_HomeLayout";
+	ViewData["HeaderImage"] = $"../../img/{Model.Discussion.GameName}.jpg";
+	ViewData["HeaderTitle"] = Model.Discussion.Title;
+	ViewData["AuthorName"] = $"{Model.Discussion.Creator.FirstName} {Model.Discussion.Creator.LastName}";
+	ViewData["Date"] = Model.Discussion.CreatedOn;
+	ViewData["AuthorId"] = Model.Discussion.Creator.Id;
+}
+
+<article>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 col-md-10 mx-auto">
+				@if (ViewData["IsAuthor"] is null)
+				{
+					<span class="meta">
+						Posted by
+						<a asp-controller="Home" asp-action="Author" asp-route-authorId="@ViewData["AuthorId"]">@ViewData["AuthorName"]</a>
+						on @ViewData["Date"]
+					</span>
+				}
+				<hr/>
+				@Html.Raw(Model.Discussion.Content)
+			</div>
+		</div>
+		<div class="row mt-5">
+			<div class="col-lg-8 col-md-10 mx-auto">
+				@if(@Model.Discussion.Comments.Count() != 1){
+					<h3 class="mb-5">@Model.Discussion.Comments.Count() Comments</h3>
+				}else{
+					<h3 class="mb-5">1 Comment</h3>
+				}
+				<ul class="comment-list comment-top" list="@Model.Discussion.Comments" count="0">
+					@foreach (var comment in Model.Discussion.Comments){
+						<li class="comment" style="margin-top: 30px;">
+							<div class="comment-body">
+								<h4 class="commenter-name">@comment.Creator.FirstName @comment.Creator.LastName</h4>
+								<div class="comment-date">
+									@comment.CreatedOn
+								</div>
+								<p class="comment-message">@comment.Content</p>
+							</div>
+						</li>
+						<hr/>
+					}
+				</ul>
+				@if(User.Identity.IsAuthenticated){
+					<div>
+						<form asp-controller="Discussion" asp-action="Comment">
+							<input asp-for="Discussion.Id" readonly hidden/>
+							<div class="form-group">
+								<label for="comment">Comment</label>
+								<textarea asp-for="Comment.Content" class="form-control" rows="3" required></textarea>
+								<button type="submit" class="btn w-10 post-btn btn-outline-primary">Post</button>
+								@*<button type="submit" class="btn btn-outline-primary login-btn">Post</button>*@
+							</div>
+						</form>
+					</div>
+				}else{
+						<a class="btn login-btn" asp-area="Identity" asp-page="/Account/Login" asp-route-ReturnUrl="~/Discussion/Index/@Model.Discussion.Id">Login to Comment on this Discussion</a>
+				}
+			</div>
+		</div>
+	</div>
+</article>
+@section Scripts{
+	<script>
+		//$('[data-toggle="collapse"]').on('click', function(){
+		//	var $this = $(this)
+		//	$this.find('.glyphicon').toggleClass('glyphicon-plus glyphicon-minus');
+		//	return true;
+		//});
+	</script>
+}

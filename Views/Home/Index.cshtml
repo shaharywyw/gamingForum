@@ -1,0 +1,53 @@
+﻿@model GamingForum.Models.HomeViewModels.IndexViewModel
+@using PagedList.Core.Mvc
+
+<div class="container">
+	<form asp-controller="Home" asp-action="Index" class="d-none d-md-inline-block form-check-inline m-lg-auto mr-0 mr-md-3 my-md-0">
+		<div class="input-group mb-3">
+			<input asp-for="SearchString" type="text" class="form-control" placeholder="Search" />
+			@*<input asp-for="GameName" type="text" class="form-control" placeholder="Game" />*@
+			<select asp-for="GameName" class="form-control" required>
+				<option value=" ">Game Name...</option>
+				<option value="Runescape3">Runescape3</option>
+				<option value="Old School Runescape">Old School Runescape</option>
+				<option value="World Of Warcraft">World Of Warcraft</option>
+				<option value="Maplestory">MapleStory</option>
+			</select>
+			<div class=input-group-append>
+				<button class="btn btn-outline-secondary " style="padding: 0 10px 0 10px;">Search</button>
+			</div>
+		</div>
+	</form>
+	<div class="row align-content-center">
+		@foreach(var discussion in Model.Discussions)
+		{
+			<div class="col-lg-3 col-md-3 mb-4">
+				<div class="cardborder-0 shadow">
+					@*<img src="~/img/@(discussion.GameName).jpg" class="card-img-bottom">*@
+					<a asp-controller="Discussion" asp-action="Index" asp-route-id="@discussion.Id"><img src="~/img/@(discussion.GameName).jpg" class="card-img-bottom"></a>
+					@*<div class="card-body">
+						<div class="row text-center" style="margin: 0px auto 10px 0px;">
+							<h5 class="card-title text-center w-100"><a asp-controller="Discussion" asp-action="Index" asp-route-id="@discussion.Id">@discussion.Title</a></h5>
+						</div>
+					</div>*@
+					<div class="card-body">
+						<div class="row" style="margin: 0px auto 10px 0px;">
+							<div><h5 class="card-title text-center w-100"><a asp-controller="Discussion" asp-action="Index" asp-route-id="@discussion.Id">@discussion.Title</a></h5></div>
+						</div>
+						<div class="row ml-0">
+							<div></div>
+							<p class="text-muted ml-3 mb-0"><i class="fas fa-calendar-alt" style="color: gray"></i> Created on: @discussion.CreatedOn</p>
+						</div>
+						<div class="row ml-0" style="bottom: 0;">
+							<div></div>
+							<p class="text-muted ml-3 mb-0"><i class="fas fa-comment" style="color: gray"></i> @discussion.Comments.Count() comments</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+	@*<div list="@Model.Discussions" count="9">*@
+		<pager class="pager-container" list="@Model.Discussions" options="@PagedListRenderOptions.Bootstrap4PageNumbersPlusPrevAndNext" asp-action="Index" asp-controller="Home" asp-route-query="@Model.SearchString" />
+	@*</div>*@
+</div>

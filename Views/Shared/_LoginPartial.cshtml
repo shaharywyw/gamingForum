@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using GamingForum.Data.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item">
+        <a  class="nav-link" asp-area="Identity" asp-controller="Admin" asp-action="index" title="Manage">Hello @((await UserManager.GetUserAsync(User)).FirstName)!</a>
+    </li>
+    <li class="nav-item">
+        @*<a class="nav-link" onclick="$('#LogoutForm').submit();" style="cursor: pointer">Logout</a>*@
+        <a class="nav-link" onclick="document.getElementById('LogoutForm').submit();" style="cursor: pointer">Logout</a>
+        <form  id="LogoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            @*<button  type="submit" class="nav-link btn btn-link text-white">LOGOUT</button>*@
+        </form>
+    </li>
+}else
+{
+    <li class="nav-item">
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </li>
+}
+</ul>
